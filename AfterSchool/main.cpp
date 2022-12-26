@@ -13,10 +13,17 @@ int main(void) {
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100);
 	window.draw(player);
+
+	RectangleShape enemy;
+	enemy.setSize(Vector2f(70, 70));
+	enemy.setPosition(500, 300);
+	window.draw(enemy);
+	player.setFillColor(Color::Yellow);
+
 	
 	//사각형 색상 변경
 	player.setFillColor(Color::Red);
-	
+
 	//플레이어 스피드 3으로 초기화
 	int player_speed = 5;
 
@@ -33,7 +40,7 @@ int main(void) {
 			}
 		}
 		//플레이어 움직임 구현
-		//else를 쓰지 않으면 중간으로 나갈 수 있음 제약이 줄어든다.
+		//else를 쓰지 않으면 중간으로 나갈 수 있음 제약이 줄어든다.(동시동작 가능)
 		if (Keyboard::isKeyPressed(Keyboard::Left)) {
 			player.move(-player_speed, 0);
 		}
@@ -48,8 +55,8 @@ int main(void) {
 		}
 		//60분에 1초마다 그렸다 지웠다를 반복하게 된다. 
 		window.clear(Color::Black);
-
-		window.draw(player);
+		
+	
 		window.display();
 	}
 	return 0;
