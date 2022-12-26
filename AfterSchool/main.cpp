@@ -13,8 +13,12 @@ int main(void) {
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100);
 	window.draw(player);
+	
 	//사각형 색상 변경
 	player.setFillColor(Color::Red);
+	
+	//플레이어 스피드 3으로 초기화
+	int player_speed = 5;
 
 	//윈도우가 열려있을 때 까지 반복
 	while (window.isOpen()) {
@@ -30,16 +34,16 @@ int main(void) {
 		}
 		//플레이어 움직임 구현
 		if (Keyboard::isKeyPressed(Keyboard::Left)) {
-			player.move(-1, 0);
+			player.move(-player_speed, 0);
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::Up)) {
-			player.move(0, -1);
+			player.move(0, -player_speed);
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::Down)) {
-			player.move(0, 1);
+			player.move(0, player_speed);
 		}
 		else if (Keyboard::isKeyPressed(Keyboard::Right)) {
-			player.move(1, 0);
+			player.move(player_speed, 0);
 		}
 		//60분에 1초마다 그렸다 지웠다를 반복하게 된다. 
 		window.clear(Color::Black);
