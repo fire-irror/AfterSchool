@@ -7,6 +7,7 @@ int main(void) {
 	//윈도우 창 생성
 	RenderWindow window(VideoMode(640, 480), "AfterSchool");
 
+	//사각형 창 그리기
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100);
