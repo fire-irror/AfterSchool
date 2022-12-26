@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <SFML/GpuPreference.hpp>
+#include <SFML/Graphics.hpp>
 
 using namespace sf;
 
