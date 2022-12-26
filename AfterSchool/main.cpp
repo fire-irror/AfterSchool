@@ -12,6 +12,7 @@ int main(void) {
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100);
 	window.draw(player);
+	player.setFillColor(Color::Red);
 
 	//윈도우가 열려있을 때 까지 반복
 	while (window.isOpen()) {
