@@ -20,11 +20,12 @@ int main(void) {
 
 	RectangleShape enemy[5];
 	int enemy_life[5];
+	//enemy 초기화
 	for (int i = 0; i < 5; i++) {
 		enemy[i].setSize(Vector2f(70, 70));
 		enemy[i].setFillColor(Color::Yellow);
 		//적이 랜덤으로 나오게 된다. 
-		enemy[i].setPosition(rand()%640+300, rand()%380);
+		enemy[i].setPosition(rand()%300+300, rand()%380);
 		enemy_life[i] = 1;
 	}
 
@@ -46,8 +47,11 @@ int main(void) {
 				window.close();
 			}
 		}
+		
+		
 		//플레이어 움직임 구현
 		//else를 쓰지 않으면 중간으로 나갈 수 있음 제약이 줄어든다.(동시동작 가능)
+		//방향키 start
 		if (Keyboard::isKeyPressed(Keyboard::Left)) {
 			player.move(-player_speed, 0);
 		}
@@ -59,6 +63,21 @@ int main(void) {
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Right)) {
 			player.move(player_speed, 0);
+		}//방향키 end
+
+		
+		 
+		 
+		 
+		 //스페이스키 누르면 모든 enemy 다시 출현
+		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+			for (int i = 0; i < 5; i++) {
+				enemy[i].setSize(Vector2f(70, 70));
+				enemy[i].setFillColor(Color::Yellow);
+				//적이 랜덤으로 나오게 된다. 
+				enemy[i].setPosition(rand() % 300 + 300, rand() % 380);
+				enemy_life[i] = 1;
+			}
 		}
 
 		//충돌 처리를 enemy가 살아있을 때만 그리겠다. 
