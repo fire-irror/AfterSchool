@@ -18,7 +18,8 @@ int main(void) {
 	enemy.setSize(Vector2f(70, 70));
 	enemy.setPosition(500, 300);
 	window.draw(enemy);
-	player.setFillColor(Color::Yellow);
+	enemy.setFillColor(Color::Yellow);
+	int enemy_life = 1;
 
 	
 	//사각형 색상 변경
@@ -53,10 +54,26 @@ int main(void) {
 		if (Keyboard::isKeyPressed(Keyboard::Right)) {
 			player.move(player_speed, 0);
 		}
+
+		//충돌 처리를 enemy가 살아있을 때만 그리겠다. 
+		if (enemy_life > 0) {
+			//적과의 충돌처리
+			if (player.getGlobalBounds().intersects(enemy.getGlobalBounds())) {
+				printf("enemy과 충돌\n");
+				enemy_life -= 1;
+			}
+		}
+
+
 		//60분에 1초마다 그렸다 지웠다를 반복하게 된다. 
 		window.clear(Color::Black);
 		
+		if (enemy_life > 0)
+			window.draw(enemy);
+
+		//draw는 나중에 호출할 수록 우선순위가 높아진다. 
 	
+		window.draw(player);
 		window.display();
 	}
 	return 0;
