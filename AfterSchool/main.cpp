@@ -12,8 +12,6 @@ int main(void) {
 
 	srand(time(0));
 
-
-
 	//사각형 창 그리기
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
@@ -25,7 +23,8 @@ int main(void) {
 	for (int i = 0; i < 5; i++) {
 		enemy[i].setSize(Vector2f(70, 70));
 		enemy[i].setFillColor(Color::Yellow);
-		enemy[i].setPosition(rand()%640, rand()%480);
+		//적이 랜덤으로 나오게 된다. 
+		enemy[i].setPosition(rand()%640+300, rand()%380);
 		enemy_life[i] = 1;
 	}
 
@@ -63,7 +62,6 @@ int main(void) {
 		}
 
 		//충돌 처리를 enemy가 살아있을 때만 그리겠다. 
-
 		for (int i = 0; i < 5; i++) {
 			if (enemy_life[i] > 0) {
 				//적과의 충돌처리
