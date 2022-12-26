@@ -6,12 +6,14 @@ using namespace sf;
 int main(void) {
 	//윈도우 창 생성
 	RenderWindow window(VideoMode(640, 480), "AfterSchool");
+	window.setFramerateLimit(60);
 
 	//사각형 창 그리기
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100);
 	window.draw(player);
+	//사각형 색상 변경
 	player.setFillColor(Color::Red);
 
 	//윈도우가 열려있을 때 까지 반복
@@ -26,6 +28,22 @@ int main(void) {
 			window. close();
 			}
 		}
+		//플레이어 움직임 구현
+		if (Keyboard::isKeyPressed(Keyboard::Left)) {
+			player.move(-1, 0);
+		}
+		else if (Keyboard::isKeyPressed(Keyboard::Up)) {
+			player.move(0, -1);
+		}
+		else if (Keyboard::isKeyPressed(Keyboard::Down)) {
+			player.move(0, 1);
+		}
+		else if (Keyboard::isKeyPressed(Keyboard::Right)) {
+			player.move(1, 0);
+		}
+		//60분에 1초마다 그렸다 지웠다를 반복하게 된다. 
+		window.clear(Color::Black);
+
 		window.draw(player);
 		window.display();
 	}
