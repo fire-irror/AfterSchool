@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace sf;
 
@@ -7,6 +9,10 @@ int main(void) {
 	//윈도우 창 생성
 	RenderWindow window(VideoMode(640, 480), "AfterSchool");
 	window.setFramerateLimit(60);
+
+	srand(time(0));
+
+
 
 	//사각형 창 그리기
 	RectangleShape player;
@@ -19,7 +25,7 @@ int main(void) {
 	for (int i = 0; i < 5; i++) {
 		enemy[i].setSize(Vector2f(70, 70));
 		enemy[i].setFillColor(Color::Yellow);
-		enemy[i].setPosition(500, 100 * i);
+		enemy[i].setPosition(rand()%640, rand()%480);
 		enemy_life[i] = 1;
 	}
 
