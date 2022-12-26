@@ -33,16 +33,17 @@ int main(void) {
 			}
 		}
 		//플레이어 움직임 구현
+		//else를 쓰지 않으면 중간으로 나갈 수 있음 제약이 줄어든다.
 		if (Keyboard::isKeyPressed(Keyboard::Left)) {
 			player.move(-player_speed, 0);
 		}
-		else if (Keyboard::isKeyPressed(Keyboard::Up)) {
+		if (Keyboard::isKeyPressed(Keyboard::Up)) {
 			player.move(0, -player_speed);
 		}
-		else if (Keyboard::isKeyPressed(Keyboard::Down)) {
+		if (Keyboard::isKeyPressed(Keyboard::Down)) {
 			player.move(0, player_speed);
 		}
-		else if (Keyboard::isKeyPressed(Keyboard::Right)) {
+		if (Keyboard::isKeyPressed(Keyboard::Right)) {
 			player.move(player_speed, 0);
 		}
 		//60분에 1초마다 그렸다 지웠다를 반복하게 된다. 
