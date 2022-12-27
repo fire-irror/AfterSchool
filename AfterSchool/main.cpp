@@ -12,6 +12,17 @@ int main(void) {
 
 	srand(time(0));
 
+	Font font;
+	font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
+
+	Text text;
+	text.setFont(font);
+	text.setCharacterSize(35);
+	text.setFillColor(Color(255, 255, 255));	
+	text.setPosition(0, 0);
+	text.setString("SCORE");
+
+
 	//사각형 창 그리기
 	RectangleShape player;
 	player.setSize(Vector2f(40, 40));
@@ -106,7 +117,10 @@ int main(void) {
 
 		//draw는 나중에 호출할 수록 우선순위가 높아진다. 
 
+		
 		window.draw(player);
+		window.draw(text);
+
 		window.display();
 	}
 	return 0;
