@@ -1,25 +1,40 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SFML/Audio.hpp>//SoundBuffer 사용
 #include <time.h>
 #include <SFML/Graphics.hpp>
-#include <time.h>
+#include <SFML/Audio.hpp>//SoundBuffer 사용
 
 using namespace sf;
 
+struct Player {
+	RectangleShape sprite;// sprite : 그림이 되는 부분
+	int speed;
+	int score;
+};
+
+struct Enemy {
+	RectangleShape sprite;
+	SoundBuffer explosion_buffer;
+	Sound explosion_sound;//소리에 대한 정보를 담음
+	int speed;
+	int score;
+	int life;
+};
+
 int main(void) {
 
-	srand((time(0)));
-
-
-	long start_time = clock();		//게임 시작시간
-	long spent_time;				//게임 진행시간
+	srand(time(NULL));//랜덤 함수 사용
 
 	//640 x 480 윈도우 화면 나옴
 	//잠깐 떴다가 사라지는 건 return 0때문에 프로그램이 종료된 것
 	RenderWindow window(VideoMode(640, 480), "AfterSchool");
 	window.setFramerateLimit(60);//1초에 60장 보여준다. 플레이어가 빨리 가지 않도록 하기
 
+
+	long start_time = clock();// 게임 시작 시간
+	long spent_time;// 게임 진행 시간
+
+	// text 폰트
 	Font font;
 	font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");//C드라이브에 있는 폰트 가져오기
 
@@ -30,39 +45,37 @@ int main(void) {
 	text.setFillColor(Color(255, 255, 255));//RGB로 흰색 표현
 	text.setPosition(0, 0);//텍스트 위치 0,0
 
+	//배경
 	Texture bg_texture;
 	bg_texture.loadFromFile("./resources/images/background.jpg");
 	Sprite bg_sprite;
 	bg_sprite.setTexture(bg_texture);
 	bg_sprite.setPosition(0, 0);
 
-	//네모 모양의 플레이어
-	RectangleShape player;
-	player.setSize(Vector2f(40, 40));//플레이어 사이즈
-	player.setPosition(100, 100);//플레이어 시작 위치
-	player.setFillColor(Color::Red);//플레이어 색상
-	int player_speed = 7;//플레이어 속도
-	int player_score = 0;//플레이어 점수
-
-	const int ENEMY_NUM = 10;
-	RectangleShape enemy[ENEMY_NUM];//적
-	int enemy_life[ENEMY_NUM];//적의 체력
-	int enemy_speed[ENEMY_NUM];//적의 속도
-	int enemy_score = 100;//적을 잡을 때마다 얻는 점수
-	SoundBuffer enemy_explosion_buffer;
-	enemy_explosion_buffer.loadFromFile("./resources/sounds/rumble.flac");
-	Sound enemy_explosion_sound;
-	enemy_explosion_sound.setBuffer(enemy_explosion_buffer);
+	// 플레이어
+	struct Player player;
+	player.sprite.setSize(Vector2f(40, 40));//플레이어 사이즈
+	player.sprite.setPosition(100, 100);//플레이어 시작 위치
+	player.sprite.setFillColor(Color::Red);//플레이어 색상
+	player.speed = 7;//플레이어 속도
+	player.score = 0;//플레이어 점수
 
 
-	//초기화
+	// enemy
+	const int ENEMY_NUM = 12;
+	struct Enemy enemy[ENEMY_NUM];
+
 	for (int i = 0; i < ENEMY_NUM; i++)
 	{
-		enemy[i].setSize(Vector2f(70, 70));
-		enemy[i].setPosition(rand() % 300 + 300, rand() % 380);
-		enemy_life[i] = 1;
-		enemy[i].setFillColor(Color::Yellow);//적 색상
-		enemy_speed[i] = -(rand() % 10 + 1);
+		// TODO : 굉장히 비효율적인 코드이므로 나중에 refactoring
+		enemy[i].explosion_buffer.loadFromFile("./resources/sound/rumble.flac");
+		enemy[i].explosion_sound.setBuffer(enemy[i].explosion_buffer);
+		enemy[i].score = 100;
+		enemy[i].sprite.setSize(Vector2f(70, 70));
+		enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
+		enemy[i].life = 1;
+		enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
+		enemy[i].speed = -(rand() % 10 + 1);
 	}
 
 
@@ -87,72 +100,76 @@ int main(void) {
 				{
 					for (int i = 0; i < ENEMY_NUM; i++)
 					{
-						enemy[i].setSize(Vector2f(70, 70));
-						enemy[i].setPosition(rand() % 300 + 300, rand() % 410);
-						enemy_life[i] = 1;
-						enemy[i].setFillColor(Color::Yellow);//적 색상
+						enemy[i].sprite.setSize(Vector2f(70, 70));
+						enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
+						enemy[i].life = 1;
+						enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
 					}
 				}
 				break;
 			}
 			}
 		}
-		spent_time = clock() - start_time;
+
+		spent_time = clock() - start_time;// 시간이 지남에 따라 증가
 
 		//방향키
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
-			player.move(-1 * player_speed, 0);//왼쪽 이동
+			player.sprite.move(-1 * player.speed, 0);//왼쪽 이동
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Up))
 		{
-			player.move(0, -1 * player_speed);//위쪽 이동
+			player.sprite.move(0, -1 * player.speed);//위쪽 이동
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Down))
 		{
-			player.move(0, player_speed);//아래쪽 이동
+			player.sprite.move(0, player.speed);//아래쪽 이동
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Right))
 		{
-			player.move(player_speed, 0);//오른쪽 이동
+			player.sprite.move(player.speed, 0);//오른쪽 이동
 		}
 
 		//enemy와의 충돌
 		//intersects : 플레이어와 적 사이에서 교집합이 있는가
 		for (int i = 0; i < ENEMY_NUM; i++)
 		{
-			if (enemy_life[i] > 0)
+			if (enemy[i].life > 0)
 			{
-				if (player.getGlobalBounds().intersects(enemy[i].getGlobalBounds()))
+				// enemy와의 충돌
+				if (player.sprite.getGlobalBounds().intersects(enemy[i].sprite.getGlobalBounds()))
 				{
 					printf("enemy[%d]와의 충돌\n", i);
-					enemy_life[i] -= 1;//적의 생명 줄이기
-					player_score += enemy_score;
+					enemy[i].life -= 1;//적의 생명 줄이기
+					player.score += enemy[i].score;
 
-					//TODO : 코드 refactoring 필요
-					if (enemy_life[i] == 0) {
-						enemy_explosion_sound.play();
+					// TODO : 코드 refactoring 필요
+					if (enemy[i].life == 0)
+					{
+						enemy[i].explosion_sound.play();
 					}
 				}
-				enemy[i].move(enemy_speed[i],0);
+
+				enemy[i].sprite.move(enemy[i].speed, 0);
 			}
+
 		}
 
-		sprintf(info, "score: %d  time: %d", player_score,spent_time/1000);
+		// 시작 시간은 변하지 않음
+		sprintf(info, "score: %d time: %d\n", player.score, spent_time / 1000);
 		text.setString(info);
-	
-	
-		
+
 		window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
 		window.draw(bg_sprite);
 
 		for (int i = 0; i < ENEMY_NUM; i++)
 		{
-			if (enemy_life[i] > 0)  window.draw(enemy[i]);//적 보여주기
+			if (enemy[i].life > 0)  window.draw(enemy[i].sprite);//적 보여주기
 		}
 		//화면이 열려져 있는 동안 계속 그려야 함
 		//draw는 나중에 호출할수록 우선순위가 높아짐
-		window.draw(player);//플레이어 보여주기(그려주기)
+		window.draw(player.sprite);//플레이어 보여주기(그려주기)
 		window.draw(text);
 
 		window.display();
