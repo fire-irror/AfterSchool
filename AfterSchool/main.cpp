@@ -9,7 +9,7 @@ using namespace sf;
 int main(void) {
 
 	srand((unsigned int)time(NULL));//랜덤 함수 사용
-
+	
 	//640 x 480 윈도우 화면 나옴
 	//잠깐 떴다가 사라지는 건 return 0때문에 프로그램이 종료된 것
 	RenderWindow window(VideoMode(640, 480), "AfterSchool");
