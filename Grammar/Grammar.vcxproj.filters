@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="문자열 덧붙이기.c">
+    <ClCompile Include="구조체.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
