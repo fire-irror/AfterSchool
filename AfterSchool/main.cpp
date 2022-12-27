@@ -17,9 +17,11 @@ int main(void) {
 	player.setSize(Vector2f(40, 40));
 	player.setPosition(100, 100);
 	window.draw(player);
+	int player_score = 0;
 
 	RectangleShape enemy[5];
 	int enemy_life[5];
+	int enemy_score = 100;		//적을 잡을 때마다 100점씩 증가
 	//enemy 초기화
 	for (int i = 0; i < 5; i++) {
 		enemy[i].setSize(Vector2f(70, 70));
@@ -44,6 +46,20 @@ int main(void) {
 			//종료(x)버튼을 누르면  
 			switch (event.type) {
 			case Event::Closed:
+				break;
+			case Event::KeyPressed: {
+				//space를 눌렀을 때 한번만 움직이도록하기.
+				if (event.key.code == Keyboard::Space) {
+					for (int i = 0; i < 5; i++) {
+						enemy[i].setSize(Vector2f(70, 70));
+						enemy[i].setFillColor(Color::Yellow);
+						//적이 랜덤으로 나오게 된다. 
+						enemy[i].setPosition(rand() % 300 + 300, rand() % 380);
+						enemy_life[i] = 1;
+					}
+				}
+			}
+								  break;
 				window.close();
 			}
 		}
@@ -67,20 +83,6 @@ int main(void) {
 
 		
 		 
-		 
-		 
-		 //스페이스키 누르면 모든 enemy 다시 출현
-		// TODO: 한 번 누를 때, 한 번만 적용하기
-		if (Keyboard::isKeyPressed(Keyboard::Space)) {
-			for (int i = 0; i < 5; i++) {
-				enemy[i].setSize(Vector2f(70, 70));
-				enemy[i].setFillColor(Color::Yellow);
-				//적이 랜덤으로 나오게 된다. 
-				enemy[i].setPosition(rand() % 300 + 300, rand() % 380);
-				enemy_life[i] = 1;
-			}
-		}
-
 		//충돌 처리를 enemy가 살아있을 때만 그리겠다. 
 		for (int i = 0; i < 5; i++) {
 			if (enemy_life[i] > 0) {
@@ -88,9 +90,12 @@ int main(void) {
 				if (player.getGlobalBounds().intersects(enemy[i].getGlobalBounds())) {
 					printf("enemy[%d]과 충돌\n",i);
 					enemy_life[i] -= 1;
+					player_score += enemy_score;
 				}
 			}
 		}
+
+		printf("SCORE : %d\n", player_score);
 
 		//60분에 1초마다 그렸다 지웠다를 반복하게 된다. 
 		window.clear(Color::Black);
