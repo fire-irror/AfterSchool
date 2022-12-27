@@ -1,127 +1,134 @@
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include <stdlib.h>
+//#include <string.h>
 #include <time.h>
+#include <SFML/Graphics.hpp>
 
 using namespace sf;
 
 int main(void) {
-	//윈도우 창 생성
-	RenderWindow window(VideoMode(640, 480), "AfterSchool");
-	window.setFramerateLimit(60);
 
-	srand(time(0));
+	srand((unsigned int)time(NULL));//랜덤 함수 사용
+
+	//640 x 480 윈도우 화면 나옴
+	//잠깐 떴다가 사라지는 건 return 0때문에 프로그램이 종료된 것
+	RenderWindow window(VideoMode(640, 480), "AfterSchool");
+	window.setFramerateLimit(60);//1초에 60장 보여준다. 플레이어가 빨리 가지 않도록 하기
 
 	Font font;
-	font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
+	font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");//C드라이브에 있는 폰트 가져오기
 
 	Text text;
-	text.setFont(font);
-	text.setCharacterSize(35);
-	text.setFillColor(Color(255, 255, 255));	
-	text.setPosition(0, 0);
-	text.setString("SCORE");
+	char info[40];
+	text.setFont(font);//폰트 세팅
+	text.setCharacterSize(24);//폰트 크기
+	text.setFillColor(Color(255, 255, 255));//RGB로 흰색 표현
+	text.setPosition(0, 0);//텍스트 위치 0,0
 
 
-	//사각형 창 그리기
+	//네모 모양의 플레이어
 	RectangleShape player;
-	player.setSize(Vector2f(40, 40));
-	player.setPosition(100, 100);
-	window.draw(player);
-	int player_score = 0;
+	player.setSize(Vector2f(40, 40));//플레이어 사이즈
+	player.setPosition(100, 100);//플레이어 시작 위치
+	player.setFillColor(Color::Red);//플레이어 색상
+	int player_speed = 5;//플레이어 속도
+	int player_score = 0;//플레이어 점수
 
-	RectangleShape enemy[5];
-	int enemy_life[5];
-	int enemy_score = 100;		//적을 잡을 때마다 100점씩 증가
-	//enemy 초기화
-	for (int i = 0; i < 5; i++) {
+
+	RectangleShape enemy[5];//적
+	int enemy_life[5];//적의 체력
+	int enemy_score = 100;//적을 잡을 때마다 얻는 점수
+	for (int i = 0; i < 5; i++)
+	{
 		enemy[i].setSize(Vector2f(70, 70));
-		enemy[i].setFillColor(Color::Yellow);
-		//적이 랜덤으로 나오게 된다. 
-		enemy[i].setPosition(rand()%300+300, rand()%380);
+		enemy[i].setPosition(rand() % 300 + 300, rand() % 410);
 		enemy_life[i] = 1;
+		enemy[i].setFillColor(Color::Yellow);//적 색상
 	}
 
-	//사각형 색상 변경
-	player.setFillColor(Color::Red);
 
-	//플레이어 스피드 3으로 초기화
-	int player_speed = 5;
-
-	//윈도우가 열려있을 때 까지 반복
-	while (window.isOpen()) {
-
-		Event event;
-		while (window.pollEvent(event)) {
-
-			//종료(x)버튼을 누르면  
-			switch (event.type) {
-			case Event::Closed:
+	//유지 시키는 방법은? -> 무한 반복
+	while (window.isOpen()) //윈도우창이 열려있는 동안 계속 반복
+	{
+		Event event;//이벤트 생성
+		while (window.pollEvent(event)) //이벤트가 발생. 이벤트가 발생해야 event 초기화가 됨
+		{
+			switch (event.type)
+			{
+				//종료(x)버튼을 누르면 Event::Closed(0) 
+			case Event::Closed://정수임
+				window.close();//윈도우창이 닫힘
 				break;
-			case Event::KeyPressed: {
-				//space를 눌렀을 때 한번만 움직이도록하기.
-				if (event.key.code == Keyboard::Space) {
-					for (int i = 0; i < 5; i++) {
+				//키보드를 눌렀을 때 
+			case Event::KeyPressed:
+				//case문 안에 변수를 선언할 때에는 중괄호를 쳐야 함
+			{
+				//space키 누르면 모든 enemy 다시 출현
+				if (event.key.code == Keyboard::Space)
+				{
+					for (int i = 0; i < 5; i++)
+					{
 						enemy[i].setSize(Vector2f(70, 70));
-						enemy[i].setFillColor(Color::Yellow);
-						//적이 랜덤으로 나오게 된다. 
-						enemy[i].setPosition(rand() % 300 + 300, rand() % 380);
+						enemy[i].setPosition(rand() % 300 + 300, rand() % 410);
 						enemy_life[i] = 1;
+						enemy[i].setFillColor(Color::Yellow);//적 색상
 					}
 				}
+				break;
 			}
-								  break;
-				window.close();
 			}
 		}
-		
-		
-		//플레이어 움직임 구현
-		//else를 쓰지 않으면 중간으로 나갈 수 있음 제약이 줄어든다.(동시동작 가능)
-		//방향키 start
-		if (Keyboard::isKeyPressed(Keyboard::Left)) {
-			player.move(-player_speed, 0);
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Up)) {
-			player.move(0, -player_speed);
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Down)) {
-			player.move(0, player_speed);
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Right)) {
-			player.move(player_speed, 0);
-		}//방향키 end
 
-		
-		 
-		//충돌 처리를 enemy가 살아있을 때만 그리겠다. 
-		for (int i = 0; i < 5; i++) {
-			if (enemy_life[i] > 0) {
-				//적과의 충돌처리
-				if (player.getGlobalBounds().intersects(enemy[i].getGlobalBounds())) {
-					printf("enemy[%d]과 충돌\n",i);
-					enemy_life[i] -= 1;
+		//방향키
+		if (Keyboard::isKeyPressed(Keyboard::Left))
+		{
+			player.move(-1 * player_speed, 0);//왼쪽 이동
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Up))
+		{
+			player.move(0, -1 * player_speed);//위쪽 이동
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Down))
+		{
+			player.move(0, player_speed);//아래쪽 이동
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Right))
+		{
+			player.move(player_speed, 0);//오른쪽 이동
+		}
+
+		//enemy와의 충돌
+		//intersects : 플레이어와 적 사이에서 교집합이 있는가
+		for (int i = 0; i < 5; i++)
+		{
+			if (enemy_life[i] > 0)
+			{
+				if (player.getGlobalBounds().intersects(enemy[i].getGlobalBounds()))
+				{
+					printf("enemy[%d]와의 충돌\n", i);
+					enemy_life[i] -= 1;//적의 생명 줄이기
 					player_score += enemy_score;
 				}
 			}
 		}
 
-		printf("SCORE : %d\n", player_score);
+		sprintf(info, "score: %d\n", player_score);
+		text.setString(info);
+		printf("score : %d\n", player_score);
 
-		//60분에 1초마다 그렸다 지웠다를 반복하게 된다. 
-		window.clear(Color::Black);
+		window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
 
 		for (int i = 0; i < 5; i++)
-			if (enemy_life[i] > 0)
-				window.draw(enemy[i]);
-
-		//draw는 나중에 호출할 수록 우선순위가 높아진다. 
-
-		
-		window.draw(player);
+		{
+			if (enemy_life[i] > 0)  window.draw(enemy[i]);//적 보여주기
+		}
+		//화면이 열려져 있는 동안 계속 그려야 함
+		//draw는 나중에 호출할수록 우선순위가 높아짐
+		window.draw(player);//플레이어 보여주기(그려주기)
 		window.draw(text);
 
 		window.display();
 	}
+
 	return 0;
 }
