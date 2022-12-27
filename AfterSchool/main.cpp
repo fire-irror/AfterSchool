@@ -70,6 +70,7 @@ int main(void) {
 		 
 		 
 		 //스페이스키 누르면 모든 enemy 다시 출현
+		// TODO: 한 번 누를 때, 한 번만 적용하기
 		if (Keyboard::isKeyPressed(Keyboard::Space)) {
 			for (int i = 0; i < 5; i++) {
 				enemy[i].setSize(Vector2f(70, 70));
