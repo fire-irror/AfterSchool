@@ -89,7 +89,7 @@ int main(void) {
 			}
 			}
 		}
-		spent_time = clock();
+		spent_time = clock() - start_time;
 
 		//πÊ«‚≈∞
 		if (Keyboard::isKeyPressed(Keyboard::Left))
@@ -129,7 +129,7 @@ int main(void) {
 			}
 		}
 
-		sprintf(info, "score: %d  time: %d", player_score,(start_time,spent_time)/1000);
+		sprintf(info, "score: %d  time: %d", player_score,spent_time/1000);
 		text.setString(info);
 	
 
