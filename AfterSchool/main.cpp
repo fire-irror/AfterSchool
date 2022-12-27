@@ -10,6 +10,7 @@ struct Player {
 	RectangleShape sprite;// sprite : 그림이 되는 부분
 	int speed;
 	int score;
+	int life;
 };
 
 struct Enemy {
@@ -59,6 +60,7 @@ int main(void) {
 	player.sprite.setFillColor(Color::Red);//플레이어 색상
 	player.speed = 7;//플레이어 속도
 	player.score = 0;//플레이어 점수
+	player.life = 3;
 
 
 	// enemy
@@ -148,7 +150,13 @@ int main(void) {
 					if (enemy[i].life == 0)
 					{
 						enemy[i].explosion_sound.play();
+						
 					}
+				}
+				//적이 왼쪽 끝에 진입하려는 순간
+				else if (enemy[i].sprite.getPosition().x < 0) {
+					player.life -= 1;
+					enemy[i].life = 0;
 				}
 
 				enemy[i].sprite.move(enemy[i].speed, 0);
@@ -157,7 +165,7 @@ int main(void) {
 		}
 
 		// 시작 시간은 변하지 않음
-		sprintf(info, "score: %d time: %d\n", player.score, spent_time / 1000);
+		sprintf(info, "life: %d score: %d time: %d\n", player.life,player.score, spent_time / 1000);
 		text.setString(info);
 
 		window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
