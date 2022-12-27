@@ -1,14 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <string.h>
+#include <SFML/Audio.hpp>//SoundBuffer 사용
 #include <time.h>
 #include <SFML/Graphics.hpp>
+#include <time.h>
 
 using namespace sf;
 
 int main(void) {
 
-	srand((unsigned int)time(NULL));//랜덤 함수 사용
+	srand((time(0)));
+
+
+	long start_time = clock();		//게임 시작시간
+	long spent_time;				//게임 진행시간
 	
 	//640 x 480 윈도우 화면 나옴
 	//잠깐 떴다가 사라지는 건 return 0때문에 프로그램이 종료된 것
@@ -38,6 +43,12 @@ int main(void) {
 	RectangleShape enemy[5];//적
 	int enemy_life[5];//적의 체력
 	int enemy_score = 100;//적을 잡을 때마다 얻는 점수
+	SoundBuffer enemy_explosion_buffer;
+	enemy_explosion_buffer.loadFromFile("./resources/sounds/rumble.flac");
+	Sound enemy_explosion_sound;
+	enemy_explosion_sound.setBuffer(enemy_explosion_buffer);
+
+
 	for (int i = 0; i < 5; i++)
 	{
 		enemy[i].setSize(Vector2f(70, 70));
@@ -78,6 +89,7 @@ int main(void) {
 			}
 			}
 		}
+		spent_time = clock();
 
 		//방향키
 		if (Keyboard::isKeyPressed(Keyboard::Left))
@@ -108,13 +120,18 @@ int main(void) {
 					printf("enemy[%d]와의 충돌\n", i);
 					enemy_life[i] -= 1;//적의 생명 줄이기
 					player_score += enemy_score;
+
+					//TODO : 코드 refactoring 필요
+					if (enemy_life[i] == 0) {
+						enemy_explosion_sound.play();
+					}
 				}
 			}
 		}
 
-		sprintf(info, "score: %d\n", player_score);
+		sprintf(info, "score: %d  time: %d", player_score,(start_time,spent_time)/1000);
 		text.setString(info);
-		printf("score : %d\n", player_score);
+	
 
 		window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
 
