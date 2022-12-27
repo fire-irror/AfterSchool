@@ -30,6 +30,11 @@ int main(void) {
 	text.setFillColor(Color(255, 255, 255));//RGB로 흰색 표현
 	text.setPosition(0, 0);//텍스트 위치 0,0
 
+	Texture bg_texture;
+	bg_texture.loadFromFile("./resources/images/background.jpg");
+	Sprite bg_sprite;
+	bg_sprite.setTexture(bg_texture);
+	bg_sprite.setPosition(0, 0);
 
 	//네모 모양의 플레이어
 	RectangleShape player;
@@ -132,8 +137,9 @@ int main(void) {
 		sprintf(info, "score: %d  time: %d", player_score,spent_time/1000);
 		text.setString(info);
 	
-
+		
 		window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
+		window.draw(bg_sprite);
 
 		for (int i = 0; i < 5; i++)
 		{
