@@ -230,6 +230,8 @@ int main(void) {
 		}
 		if (bullet.is_fired) {
 			bullet.sprite.move(bullet.speed, 0);
+			if (bullet.sprite.getPosition().x > W_WIDTH)
+				bullet.is_fired = 0;
 		}
 
 
