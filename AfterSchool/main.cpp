@@ -11,6 +11,15 @@ struct Player {
 	int speed;
 	int score;
 	int life;
+	float x, y;
+};
+
+//총알
+struct Bullet {
+	RectangleShape sprite;
+	int speed;
+	int is_fired;	//발사 여부
+
 };
 
 struct Enemy {
@@ -75,19 +84,26 @@ int main(void) {
 	Sprite gameover_sprite;
 	gameover_sprite.setTexture(gameover_texture);
 	gameover_sprite.setPosition((W_WIDTH-GO_WIDTH)/2,(W_HEIGHT-GO_HEIGHT)/2);
-	
+
 
 	// 플레이어
-	Texture player_texture;
-	player_texture.loadFromFile("./resources/images/player.png");
-	
 	struct Player player;
 	player.sprite.setSize(Vector2f(40, 40));//플레이어 사이즈
 	player.sprite.setPosition(100, 100);//플레이어 시작 위치
-	//player.sprite.setFillColor(Color::Red);//플레이어 색상
+	player.sprite.setFillColor(Color::Red);//플레이어 색상
+	player.x = player.sprite.getPosition().x;	//플레이어 x좌표
+	player.y = player.sprite.getPosition().y;	//플레이어 y좌표
 	player.speed = 7;//플레이어 속도
 	player.score = 0;//플레이어 점수
 	player.life = 10;
+
+
+	//총알
+	struct Bullet bullet;
+	bullet.sprite.setSize(Vector2f(10, 10));
+	bullet.sprite.setPosition(player.x+50, player.y+15);	//임시 테스트
+	bullet.speed = 20;
+	bullet.is_fired = 0;	//false니까 0으로 나타냄
 
 
 	// enemy
@@ -224,6 +240,8 @@ int main(void) {
 		//draw는 나중에 호출할수록 우선순위가 높아짐
 		window.draw(player.sprite);//플레이어 보여주기(그려주기)
 		window.draw(text);
+		window.draw(bullet.sprite);
+
 
 		if (is_gameover) {
 			window.draw(gameover_sprite);
