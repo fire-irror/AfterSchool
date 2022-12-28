@@ -142,25 +142,25 @@ int main(void) {
 			case Event::KeyPressed:
 				//case문 안에 변수를 선언할 때에는 중괄호를 쳐야 함
 			{
-				//space키 누르면 모든 enemy 다시 출현
-				if (event.key.code == Keyboard::Space)
-				{
-					for (int i = 0; i < ENEMY_NUM; i++)
-					{
-						enemy[i].sprite.setSize(Vector2f(70, 70));
-						enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
-						enemy[i].life = 1;
-						enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
-						enemy[i].speed = -(rand() % 10 + 1);
+				////space키 누르면 모든 enemy 다시 출현
+				//if (event.key.code == Keyboard::Space)
+				//{
+				//	for (int i = 0; i < ENEMY_NUM; i++)
+				//	{
+		
 
-					}
-				}
+				//	}
+				//}
 				break;
 			}
 			}
 		}
 
 		spent_time = clock() - start_time;// 시간이 지남에 따라 증가
+
+		//총알이 플레이어럴 따라다닐 수 있도록 
+		player.x = player.sprite.getPosition().x;	//플레이어 x좌표
+		player.y = player.sprite.getPosition().y;	//플레이어 y좌표
 
 		//방향키
 		if (Keyboard::isKeyPressed(Keyboard::Left))
@@ -179,10 +179,17 @@ int main(void) {
 		{
 			player.sprite.move(player.speed, 0);//오른쪽 이동
 		}
+		if (Keyboard::isKeyPressed(Keyboard::Space))
+		{
+			//총알이 발사 되어있지 않다면
+			if(!bullet.is_fired )
+			bullet.sprite.setPosition(player.x + 50, player.y + 15);
+			bullet.is_fired = 1;
+			
+		}
 
 		//enemy와의 충돌
 		//intersects : 플레이어와 적 사이에서 교집합이 있는가
-		printf("spent_time %d\n", spent_time % (1000 * 10));
 		for (int i = 0; i < ENEMY_NUM; i++)
 		{
 			// 10초 마다 enemy가 젠
@@ -221,6 +228,11 @@ int main(void) {
 			}
 
 		}
+		if (bullet.is_fired) {
+			bullet.sprite.move(bullet.speed, 0);
+		}
+
+
 		if (player.life <=0) {
 			is_gameover = 1;	//ture 임으로 1
 		}
@@ -239,6 +251,8 @@ int main(void) {
 		//화면이 열려져 있는 동안 계속 그려야 함
 		//draw는 나중에 호출할수록 우선순위가 높아짐
 		window.draw(player.sprite);//플레이어 보여주기(그려주기)
+		if (bullet.is_fired)
+			window.draw(bullet.sprite);
 		window.draw(text);
 		window.draw(bullet.sprite);
 
