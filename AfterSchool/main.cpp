@@ -34,6 +34,7 @@ int main(void) {
 
 	long start_time = clock();// 게임 시작 시간
 	long spent_time;// 게임 진행 시간
+	int is_gameover = 0;
 
 	// text 폰트
 	Font font;
@@ -46,12 +47,20 @@ int main(void) {
 	text.setFillColor(Color(255, 255, 255));//RGB로 흰색 표현
 	text.setPosition(0, 0);//텍스트 위치 0,0
 
+
 	//배경
 	Texture bg_texture;
 	bg_texture.loadFromFile("./resources/images/background.jpg");
 	Sprite bg_sprite;
 	bg_sprite.setTexture(bg_texture);
 	bg_sprite.setPosition(0, 0);
+
+	//gameover
+	Texture gameover_texture;
+	gameover_texture.loadFromFile("./resources/images/gameover.jpg");
+	Sprite gameover_sprite;
+	gameover_sprite.setTexture(gameover_texture);
+	gameover_sprite.setPosition(0, 0);
 
 	// 플레이어
 	struct Player player;
@@ -163,6 +172,9 @@ int main(void) {
 			}
 
 		}
+		if (player.life <=0) {
+			is_gameover = 1;	//ture 임으로 1
+		}
 
 		// 시작 시간은 변하지 않음
 		sprintf(info, "life: %d score: %d time: %d\n", player.life,player.score, spent_time / 1000);
@@ -179,6 +191,10 @@ int main(void) {
 		//draw는 나중에 호출할수록 우선순위가 높아짐
 		window.draw(player.sprite);//플레이어 보여주기(그려주기)
 		window.draw(text);
+
+		if (is_gameover) {
+			window.draw(gameover_sprite);
+		}
 
 		window.display();
 	}
