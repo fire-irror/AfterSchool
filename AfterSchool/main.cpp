@@ -42,6 +42,14 @@ int main(void) {
 	long spent_time;// 게임 진행 시간
 	int is_gameover = 0;
 
+	//BGM
+	SoundBuffer BGM_buffer;
+	BGM_buffer.loadFromFile("./resources/sounds/bgm.ogg");
+	Sound BGM_sound;
+	BGM_sound.setBuffer(BGM_buffer);
+	BGM_sound.setLoop(1);	//BGM무한 반복
+	BGM_sound.play();
+
 	// text 폰트
 	Font font;
 	font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");//C드라이브에 있는 폰트 가져오기
@@ -70,10 +78,13 @@ int main(void) {
 	
 
 	// 플레이어
+	Texture player_texture;
+	player_texture.loadFromFile("./resources/images/player.png");
+	
 	struct Player player;
 	player.sprite.setSize(Vector2f(40, 40));//플레이어 사이즈
 	player.sprite.setPosition(100, 100);//플레이어 시작 위치
-	player.sprite.setFillColor(Color::Red);//플레이어 색상
+	//player.sprite.setFillColor(Color::Red);//플레이어 색상
 	player.speed = 7;//플레이어 속도
 	player.score = 0;//플레이어 점수
 	player.life = 10;
