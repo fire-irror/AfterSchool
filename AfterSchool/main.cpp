@@ -34,7 +34,7 @@ struct Enemy {
 
 //obj1과 obj2의 충돌 여부 충돌하면 1로 반환 아니면 0으로 반환
 int is_collide(RectangleShape obj1, RectangleShape obj2) {
-	obj1.getGlobalBounds().intersects(obj2.getGlobalBounds());
+	return obj1.getGlobalBounds().intersects(obj2.getGlobalBounds());
 }
 
 
