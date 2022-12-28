@@ -20,7 +20,13 @@ struct Enemy {
 	int speed;
 	int score;
 	int life;
+	int respawn_time;
 };
+
+//전역변수
+const int ENEMY_NUM = 12;					//적의 최대 개수
+const int W_WIDTH = 1200, W_HEIGHT = 600;	//창의 크기
+const int GO_WIDTH = 320, GO_HEIGHT = 240;	//게임 오버 그림 크기
 
 int main(void) {
 
@@ -28,7 +34,7 @@ int main(void) {
 
 	//640 x 480 윈도우 화면 나옴
 	//잠깐 떴다가 사라지는 건 return 0때문에 프로그램이 종료된 것
-	RenderWindow window(VideoMode(640, 480), "AfterSchool");
+	RenderWindow window(VideoMode(W_WIDTH, W_HEIGHT), "AfterSchool");
 	window.setFramerateLimit(60);//1초에 60장 보여준다. 플레이어가 빨리 가지 않도록 하기
 
 
@@ -50,17 +56,18 @@ int main(void) {
 
 	//배경
 	Texture bg_texture;
-	bg_texture.loadFromFile("./resources/images/background.jpg");
+	bg_texture.loadFromFile("./resources/images/background.png");
 	Sprite bg_sprite;
 	bg_sprite.setTexture(bg_texture);
 	bg_sprite.setPosition(0, 0);
 
 	//gameover
 	Texture gameover_texture;
-	gameover_texture.loadFromFile("./resources/images/gameover.jpg");
+	gameover_texture.loadFromFile("./resources/images/gameover.png");
 	Sprite gameover_sprite;
 	gameover_sprite.setTexture(gameover_texture);
-	gameover_sprite.setPosition(0, 0);
+	gameover_sprite.setPosition((W_WIDTH-GO_WIDTH)/2,(W_HEIGHT-GO_HEIGHT)/2);
+	
 
 	// 플레이어
 	struct Player player;
@@ -69,11 +76,11 @@ int main(void) {
 	player.sprite.setFillColor(Color::Red);//플레이어 색상
 	player.speed = 7;//플레이어 속도
 	player.score = 0;//플레이어 점수
-	player.life = 3;
+	player.life = 10;
 
 
 	// enemy
-	const int ENEMY_NUM = 12;
+
 	struct Enemy enemy[ENEMY_NUM];
 
 	for (int i = 0; i < ENEMY_NUM; i++)
@@ -82,8 +89,10 @@ int main(void) {
 		enemy[i].explosion_buffer.loadFromFile("./resources/sound/rumble.flac");
 		enemy[i].explosion_sound.setBuffer(enemy[i].explosion_buffer);
 		enemy[i].score = 100;
+		enemy[i].respawn_time = 8;
+
 		enemy[i].sprite.setSize(Vector2f(70, 70));
-		enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
+		enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH*0.9, rand() % 410);
 		enemy[i].life = 1;
 		enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
 		enemy[i].speed = -(rand() % 10 + 1);
@@ -115,6 +124,8 @@ int main(void) {
 						enemy[i].sprite.setPosition(rand() % 300 + 300, rand() % 410);
 						enemy[i].life = 1;
 						enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
+						enemy[i].speed = -(rand() % 10 + 1);
+
 					}
 				}
 				break;
@@ -144,8 +155,19 @@ int main(void) {
 
 		//enemy와의 충돌
 		//intersects : 플레이어와 적 사이에서 교집합이 있는가
+		printf("spent_time %d\n", spent_time % (1000 * 10));
 		for (int i = 0; i < ENEMY_NUM; i++)
 		{
+			// 10초 마다 enemy가 젠
+			if (spent_time % (1000 * enemy[i].respawn_time) < 1000 / 60) // 1초동안 60프레임이 반복되기 때문에
+			{
+				enemy[i].sprite.setSize(Vector2f(70, 70));
+				enemy[i].sprite.setFillColor(Color::Yellow);//적 색상
+				enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 380);// 90%부터 적들이 나옴
+				enemy[i].life = 1;
+				// 10초마다 enemy 속도 +1
+				enemy[i].speed = -(rand() % 3 + 1 + (spent_time / 1000 / enemy[i].respawn_time));
+			}
 			if (enemy[i].life > 0)
 			{
 				// enemy와의 충돌
