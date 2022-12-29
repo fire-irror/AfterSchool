@@ -35,6 +35,7 @@ struct Item {
 	RectangleShape sprite;
 	int delay;
 	int is_presented;	//아이템이 떳는지 확인
+	long presented_time;
 };
 
 struct SBuffers {
@@ -62,8 +63,10 @@ int is_collide(RectangleShape obj1, RectangleShape obj2) {
 //전역변수
 const int ENEMY_NUM = 12;					//적의 최대 개수
 const int BULLET_NUM = 50;// 총알 최대 갯수
+const int ITEM_NUM = 2;	//item최대 종류 개수
 const int W_WIDTH = 1200, W_HEIGHT = 600;	//창의 크기
 const int GO_WIDTH = 320, GO_HEIGHT = 240;	//게임 오버 그림 크기
+
 
 int main(void) {
 
@@ -125,7 +128,7 @@ int main(void) {
 	// 플레이어
 	struct Player player;
 	player.sprite.setTexture(&t.player);	//주소값으로 받아서 가져와야 한다.
-	player.sprite.setSize(Vector2f(170, 150));//플레이어 사이즈
+	player.sprite.setSize(Vector2f(180, 170));//플레이어 사이즈
 	player.sprite.setPosition(100, 100);//플레이어 시작 위치
 	player.x = player.sprite.getPosition().x;	//플레이어 x좌표
 	player.y = player.sprite.getPosition().y;	//플레이어 y좌표
@@ -167,13 +170,16 @@ int main(void) {
 	}
 
 	//item
-	struct Item item[2];
+	struct Item item[ITEM_NUM];
 	item[0].sprite.setTexture(&t.item_speed);
 	item[0].delay = 25000;	//25초
-	item[0].sprite.setSize(Vector2f(150, 150));
-	item[0].is_presented = 1;
+	item[1].sprite.setTexture(&t.item_delay);
 
-
+	for (int i = 0; i < ITEM_NUM; i++) {
+		item[i].sprite.setSize(Vector2f(65, 70));
+		item[i].is_presented = 0;
+		item[i].presented_time = 0;
+	}
 	while (window.isOpen()) //윈도우창이 열려있는 동안 계속 반복
 	{
 		spent_time = clock() - start_time;// 시간이 지남에 따라 증가
@@ -316,10 +322,18 @@ int main(void) {
 		}
 
 		//item update
-		if (item[0].is_presented) {
-			// TODO: 충돌 시 아이템효과를 주고 사라진다
-		}
+		for (int i = 0; i < ITEM_NUM; i++) {
+			if (!item[i].is_presented) {
+				if (spent_time - item[i].presented_time > 25000) {
 
+					item[i].sprite.setPosition((rand() % W_WIDTH) * 0.8, (rand() % W_HEIGHT) * 0.8);
+					item[i].is_presented = 1;
+				}
+			}
+			if (item[i].is_presented) {
+				// TODO: 충돌 시 아이템효과를 주고 사라진다
+			}
+		}
 		// 시작 시간은 변하지 않음
 		sprintf(info, "life: %d score: %d time: %d\n", player.life, player.score, spent_time / 1000);
 		text.setString(info);
