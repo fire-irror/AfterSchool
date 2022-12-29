@@ -224,6 +224,7 @@ int main(void) {
 					bullet[bullet_idx].sprite.setPosition(player.x + 50, player.y + 15);
 					bullet[bullet_idx].is_fired = 1;
 					bullet_idx++;	//다음 총알이 발사할 수 있도록
+					bullet_idx = bullet_idx % BULLET_NUM;
 					fired_time = spent_time;	//장전시간
 				}
 			}
