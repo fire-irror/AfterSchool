@@ -101,18 +101,19 @@ int main(void) {
 	//gameover
 	Sprite gameover_sprite;
 	gameover_sprite.setTexture(t.gameover);
-	gameover_sprite.setPosition((W_WIDTH-GO_WIDTH)/2,(W_HEIGHT-GO_HEIGHT)/2);
+	gameover_sprite.setPosition((W_WIDTH - GO_WIDTH) / 2, (W_HEIGHT - GO_HEIGHT) / 2);
 
 	// 플레이어
 	struct Player player;
 	player.sprite.setTexture(&t.player);	//주소값으로 받아서 가져와야 한다.
-	player.sprite.setSize(Vector2f(320, 270));//플레이어 사이즈
+	player.sprite.setSize(Vector2f(190, 167));//플레이어 사이즈
 	player.sprite.setPosition(100, 100);//플레이어 시작 위치
 	player.x = player.sprite.getPosition().x;	//플레이어 x좌표
 	player.y = player.sprite.getPosition().y;	//플레이어 y좌표
 	player.speed = 7;//플레이어 속도
 	player.score = 0;//플레이어 점수
 	player.life = 10;
+
 
 	//총알
 	struct Bullet bullet;
@@ -136,16 +137,23 @@ int main(void) {
 		enemy[i].score = 100;
 		enemy[i].respawn_time = 8;
 
-		enemy[i].sprite.setSize(Vector2f(130,107));
-		enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH*0.9, rand() % 410);
+		enemy[i].sprite.setSize(Vector2f(130, 107));
+		enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 410);
 		enemy[i].life = 1;
 		enemy[i].speed = -(rand() % 10 + 1);
 	}
 
 
+
 	//유지 시키는 방법은? -> 무한 반복
 	while (window.isOpen()) //윈도우창이 열려있는 동안 계속 반복
 	{
+		spent_time = clock() - start_time;// 시간이 지남에 따라 증가
+
+		//총알이 플레이어럴 따라다닐 수 있도록 
+		player.x = player.sprite.getPosition().x;	//플레이어 x좌표
+		player.y = player.sprite.getPosition().y;	//플레이어 y좌표
+
 		Event event;//이벤트 생성
 		while (window.pollEvent(event)) //이벤트가 발생. 이벤트가 발생해야 event 초기화가 됨
 		{
@@ -164,12 +172,24 @@ int main(void) {
 			}
 		}
 
-		spent_time = clock() - start_time;// 시간이 지남에 따라 증가
+		//game 상태 update
+		if (player.life <= 0) {
+			is_gameover = 1;	//ture 임으로 1
+		}
 
-		//총알이 플레이어럴 따라다닐 수 있도록 
-		player.x = player.sprite.getPosition().x;	//플레이어 x좌표
-		player.y = player.sprite.getPosition().y;	//플레이어 y좌표
+		//player 이동 범위 제한
 
+		if (player.x < 0) 
+			player.sprite.setPosition(0, player.y);
+		else if (player.x > W_WIDTH-200) 
+			player.sprite.setPosition(W_WIDTH-200, player.y);
+
+		if (player.y < 0) 
+			player.sprite.setPosition(player.x,0);
+		else if (player.y > W_HEIGHT-177) 
+			player.sprite.setPosition(player.x, W_HEIGHT-177);
+
+		//player업데이트
 		//방향키
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
@@ -178,6 +198,7 @@ int main(void) {
 		if (Keyboard::isKeyPressed(Keyboard::Up))
 		{
 			player.sprite.move(0, -1 * player.speed);//위쪽 이동
+			
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Down))
 		{
@@ -191,10 +212,14 @@ int main(void) {
 		{
 			bullet.sprite.setTexture(&t.bullet);
 			//총알이 발사 되어있지 않다면
-			if(!bullet.is_fired )
-			bullet.sprite.setPosition(player.x + 50, player.y + 15);
+			if (!bullet.is_fired)
+				bullet.sprite.setPosition(player.x + 50, player.y + 15);
 			bullet.is_fired = 1;
-			
+		}
+		if (bullet.is_fired) {
+			bullet.sprite.move(bullet.speed, 0);
+			if (bullet.sprite.getPosition().x > W_WIDTH)
+				bullet.is_fired = 0;
 		}
 
 		//enemy와의 충돌
@@ -204,7 +229,7 @@ int main(void) {
 			// 10초 마다 enemy가 젠
 			if (spent_time % (1000 * enemy[i].respawn_time) < 1000 / 60) // 1초동안 60프레임이 반복되기 때문에
 			{
-				enemy[i].sprite.setSize(Vector2f(130,107));
+				enemy[i].sprite.setSize(Vector2f(130, 107));
 				enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 380);// 90%부터 적들이 나옴
 				enemy[i].life = 1;
 				// 10초마다 enemy 속도 +1
@@ -213,17 +238,17 @@ int main(void) {
 			if (enemy[i].life > 0)
 			{
 				// player과 enemy와의 충돌
-				if (is_collide(player.sprite, enemy[i].sprite) || is_collide(bullet.sprite, enemy[i].sprite)){
-			
+				if (is_collide(player.sprite, enemy[i].sprite) || is_collide(bullet.sprite, enemy[i].sprite)) {
+
 					enemy[i].life -= 1;//적의 생명 줄이기
 					player.score += enemy[i].score;
-					
+
 
 					// TODO : 코드 refactoring 필요
 					if (enemy[i].life == 0)
 					{
 						enemy[i].explosion_sound.play();
-						
+
 					}
 				}
 				//적이 왼쪽 끝에 진입하려는 순간
@@ -248,19 +273,9 @@ int main(void) {
 				enemy[i].sprite.move(enemy[i].speed, 0);
 			}
 		}
-		if (bullet.is_fired) {
-			bullet.sprite.move(bullet.speed, 0);
-			if (bullet.sprite.getPosition().x > W_WIDTH)
-				bullet.is_fired = 0;
-		}
-
-
-		if (player.life <=0) {
-			is_gameover = 1;	//ture 임으로 1
-		}
 
 		// 시작 시간은 변하지 않음
-		sprintf(info, "life: %d score: %d time: %d\n", player.life,player.score, spent_time / 1000);
+		sprintf(info, "life: %d score: %d time: %d\n", player.life, player.score, spent_time / 1000);
 		text.setString(info);
 
 		window.clear(Color::Black);//플레이어 자체 제거 (배경 지우기)
