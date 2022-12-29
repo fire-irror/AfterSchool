@@ -160,7 +160,7 @@ int main(void) {
 	{
 		enemy[i].sprite.setTexture(&t.enemy);
 
-		enemy[i].sprite.setSize(Vector2f(50, 50));
+		enemy[i].sprite.setSize(Vector2f(60, 60));
 		enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 410);
 		enemy[i].life = 1;
 		enemy[i].speed = -(rand() % 10 + 1);
@@ -267,7 +267,7 @@ int main(void) {
 				//게임이 진행중일 때만 적을 리스폰 시키겠다.
 				if (!is_gameover) {
 
-					enemy[i].sprite.setSize(Vector2f(50, 50));
+					enemy[i].sprite.setSize(Vector2f(60, 60));
 					enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 380);// 90%부터 적들이 나옴
 					enemy[i].life = 1;
 					// 10초마다 enemy 속도 +1
