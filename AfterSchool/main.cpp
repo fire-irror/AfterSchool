@@ -174,6 +174,7 @@ int main(void) {
 	item[0].sprite.setTexture(&t.item_speed);
 	item[0].delay = 25000;	//25√ 
 	item[1].sprite.setTexture(&t.item_delay);
+	item[1].delay = 5000;	//25√ 
 
 	for (int i = 0; i < ITEM_NUM; i++) {
 		item[i].sprite.setSize(Vector2f(65, 70));
@@ -324,7 +325,7 @@ int main(void) {
 		//item update
 		for (int i = 0; i < ITEM_NUM; i++) {
 			if (!item[i].is_presented) {
-				if (spent_time - item[i].presented_time > 25000) {
+				if (spent_time - item[i].presented_time > item[i].delay) {
 
 					item[i].sprite.setPosition((rand() % W_WIDTH) * 0.8, (rand() % W_HEIGHT) * 0.8);
 					item[i].is_presented = 1;
@@ -351,8 +352,11 @@ int main(void) {
 		for (int i = 0; i < BULLET_NUM; i++)
 			if (bullet[i].is_fired)
 				window.draw(bullet[i].sprite);
-		if (item[0].is_presented)
-			window.draw(item[0].sprite);
+		for (int i = 0; i < ITEM_NUM; i++) {
+			if (item[i].is_presented)
+				window.draw(item[i].sprite);
+		}
+	
 
 		window.draw(text);
 
