@@ -158,6 +158,7 @@ int main(void) {
 	int bullet_delay = 500;	// µÙ∑π¿Ã 0.5√ 
 	int bullet_delay_max = 500;
 	struct Bullet bullet[BULLET_NUM];
+	
 	for (int i = 0; i < BULLET_NUM; i++) {
 		bullet[i].sprite.setTexture(&t.bullet);
 		bullet[i].sprite.setSize(Vector2f(55, 60));

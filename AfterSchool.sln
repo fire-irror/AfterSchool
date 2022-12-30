@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루�
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Card_Game", "Card_Game\Card_Game.vcxproj", "{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -36,9 +38,20 @@ Global
 		{43F20707-6E4D-4662-AF5E-F4D2FD01E07E}.Release|x64.Build.0 = Release|x64
 		{43F20707-6E4D-4662-AF5E-F4D2FD01E07E}.Release|x86.ActiveCfg = Release|Win32
 		{43F20707-6E4D-4662-AF5E-F4D2FD01E07E}.Release|x86.Build.0 = Release|Win32
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Debug|x64.ActiveCfg = Debug|x64
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Debug|x64.Build.0 = Debug|x64
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Debug|x86.ActiveCfg = Debug|Win32
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Debug|x86.Build.0 = Debug|Win32
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Release|x64.ActiveCfg = Release|x64
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Release|x64.Build.0 = Release|x64
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Release|x86.ActiveCfg = Release|Win32
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{57C58C7F-FE8F-496C-9EF1-E5FCDA25BC1C} = {6B5433E0-F63D-4A83-A1A7-E09494C2D232}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EFA239E9-CDE4-4994-94A1-A29C9F004619}
