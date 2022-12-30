@@ -128,7 +128,7 @@ int main(void) {
 	// 플레이어
 	struct Player player;
 	player.sprite.setTexture(&t.player);	//주소값으로 받아서 가져와야 한다.
-	player.sprite.setSize(Vector2f(180, 170));//플레이어 사이즈
+	player.sprite.setSize(Vector2f(165, 160));//플레이어 사이즈
 	player.sprite.setPosition(100, 100);//플레이어 시작 위치
 	player.x = player.sprite.getPosition().x;	//플레이어 x좌표
 	player.y = player.sprite.getPosition().y;	//플레이어 y좌표
@@ -174,7 +174,7 @@ int main(void) {
 	item[0].sprite.setTexture(&t.item_speed);
 	item[0].delay = 25000;	//25초
 	item[1].sprite.setTexture(&t.item_delay);
-	item[1].delay = 5000;	//25초
+	item[1].delay = 20000;	//20초
 
 	for (int i = 0; i < ITEM_NUM; i++) {
 		item[i].sprite.setSize(Vector2f(65, 70));
