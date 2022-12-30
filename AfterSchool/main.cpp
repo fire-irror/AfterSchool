@@ -36,6 +36,7 @@ struct Item {
 	int delay;
 	int is_presented;	//아이템이 떳는지 확인
 	long presented_time;
+	int type;
 };
 
 struct SBuffers {
@@ -77,7 +78,7 @@ int main(void) {
 	t.enemy.loadFromFile("./resources/images/enemy.png");
 	t.bullet.loadFromFile("./resources/images/bullet.png");
 	t.item_delay.loadFromFile("./resources/images/item_delay.png");
-	t.item_speed.loadFromFile("./resources/images/item_speed.png");
+	t.item_speed.loadFromFile("./resources/images/item_speed.png");	
 
 	struct SBuffers sb;
 	sb.BGM.loadFromFile("./resources/sounds/bgm.ogg");
@@ -173,8 +174,10 @@ int main(void) {
 	struct Item item[ITEM_NUM];
 	item[0].sprite.setTexture(&t.item_speed);
 	item[0].delay = 25000;	//25초
+	item[0].type = 0;
 	item[1].sprite.setTexture(&t.item_delay);
 	item[1].delay = 20000;	//20초
+	item[1].type = 1;
 
 	for (int i = 0; i < ITEM_NUM; i++) {
 		item[i].sprite.setSize(Vector2f(65, 70));
@@ -332,7 +335,20 @@ int main(void) {
 				}
 			}
 			if (item[i].is_presented) {
-				// TODO: 충돌 시 아이템효과를 주고 사라진다
+				//충돌 시 아이템효과를 주고 사라진다
+				if (is_collide(player.sprite, item[i].sprite)) {
+					switch (item[i].type) {
+
+					case 0: //player move speed
+						player.speed += 3;
+						break;
+					case 1:	//player attact speed
+						bullet_delay -= 100;
+						break;
+					}
+					item[i].is_presented = 0;
+					item[i].presented_time = spent_time;
+				}
 			}
 		}
 		// 시작 시간은 변하지 않음
