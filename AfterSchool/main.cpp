@@ -91,7 +91,7 @@ int main(void) {
 	ShowWindow(hwnd, SW_HIDE);
 #endif // WIN32
 
-	struct Textures t;
+	struct Textures t; 
 	t.bg.loadFromFile("./resources/images/background.png");
 	t.gameover.loadFromFile("./resources/images/gameover.png");
 	t.player.loadFromFile("./resources/images/player.png");
