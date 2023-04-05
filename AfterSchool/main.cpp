@@ -52,8 +52,6 @@ struct SBuffers {
 	SoundBuffer rumble;
 	SoundBuffer item_delay;
 	SoundBuffer item_speed;
-
-
 };
 
 struct Textures {
@@ -173,9 +171,7 @@ int main(void) {
 		bullet[i].sprite.setSize(Vector2f(55, 60));
 		bullet[i].sprite.setPosition(player.x + 115, player.y + 15);	//임시 테스트
 		bullet[i].is_fired = 0;	//false니까 0으로 나타냄
-
 	}
-
 
 	//enemy
 	struct Enemy enemy[ENEMY_NUM];
@@ -187,7 +183,6 @@ int main(void) {
 	for (int i = 0; i < ENEMY_NUM; i++)
 	{
 		enemy[i].sprite.setTexture(&t.enemy);
-
 		enemy[i].sprite.setSize(Vector2f(60, 60));
 		enemy[i].sprite.setPosition(rand() % 300 + W_WIDTH * 0.9, rand() % 410);
 		enemy[i].life = 1;
